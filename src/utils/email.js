@@ -10,15 +10,15 @@ console.log("SMTP Auth Check -> Email:", process.env.SMTP_EMAIL ? "Found" : "Mis
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // Must be false for port 587. It will automatically upgrade to a secure TLS connection.
+    secure: false, 
     auth: {
       user: process.env.SMTP_EMAIL,
       pass: process.env.SMTP_PASSWORD,
     },
     tls: {
-      // Helps bypass strict proxy certificate checks on cloud platforms like Railway
       rejectUnauthorized: false
-    }
+    },
+    family: 4 // <--- THIS IS THE MAGIC HAMMER. It forces Nodemailer to strictly use IPv4.
   });
 
 /**
