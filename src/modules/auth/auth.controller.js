@@ -54,7 +54,7 @@ class AuthController {
       // Note: We do NOT send an HttpOnly cookie back here. 
       // The user must verify their email before they are allowed to log in.
       return res.status(201).json({
-        message: 'Account created successfully. Please check your email to verify your account.',
+        message: 'Account created successfully.',
       });
 
     } catch (error) {
