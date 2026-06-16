@@ -8,12 +8,18 @@ require('dotenv').config();
 console.log("SMTP Auth Check -> Email:", process.env.SMTP_EMAIL ? "Found" : "Missing", "| Pass:", process.env.SMTP_PASSWORD ? "Found" : "Missing");
 // Create a reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Must be false for port 587. It will automatically upgrade to a secure TLS connection.
+    auth: {
+      user: process.env.SMTP_EMAIL,
+      pass: process.env.SMTP_PASSWORD,
+    },
+    tls: {
+      // Helps bypass strict proxy certificate checks on cloud platforms like Railway
+      rejectUnauthorized: false
+    }
+  });
 
 /**
  * Sends a verification email to a newly registered user
