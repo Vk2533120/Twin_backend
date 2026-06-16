@@ -38,7 +38,7 @@ class AuthController {
    */
   async handleSignup(req, res, next) {
     try {
-      const { email, password, name, mobileNumber } = req.body;
+      const { email, password, confirmPassword, name, mobileNumber } = req.body;
       // Basic Validation
       if (!email || !password || !name || !mobileNumber) {
         return res.status(400).json({ error: 'Email, password, and name are required' });
