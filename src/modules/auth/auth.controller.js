@@ -38,10 +38,9 @@ class AuthController {
    */
   async handleSignup(req, res, next) {
     try {
-      const { email, password, name } = req.body;
-
+      const { email, password, name, mobileNumber } = req.body;
       // Basic Validation
-      if (!email || !password || !name) {
+      if (!email || !password || !name || !mobileNumber) {
         return res.status(400).json({ error: 'Email, password, and name are required' });
       }
 
@@ -50,7 +49,7 @@ class AuthController {
       }
 
       // Execute the signup service
-      await authService.signupWithEmail(email, password, name);
+      await authService.signupWithEmail(email, password, name, mobileNumber);
 
       // Note: We do NOT send an HttpOnly cookie back here. 
       // The user must verify their email before they are allowed to log in.

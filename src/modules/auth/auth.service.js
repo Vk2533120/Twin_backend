@@ -49,7 +49,11 @@ class AuthService {
 
     return { user, systemToken };
   }
-  async signupWithEmail(email, password, name) {
+  /**
+   * Registers a new user via Email, Password, and Mobile Number
+   * Bypasses email verification for instant frictionless onboarding
+   */
+  async signupWithEmail(email, password, name, mobileNumber) {
     // 1. Check if the email is already in use
     const userCheck = await db.query('SELECT id, google_id FROM users WHERE email = $1', [email]);
     
@@ -62,31 +66,23 @@ class AuthService {
       throw new Error('An account with this email already exists.');
     }
 
-    // 2. Hash the password (10 salt rounds is the industry standard balance of speed/security)
+    // 2. Hash the password (10 salt rounds balance speed/security)
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // 3. Generate a secure, random verification token
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    
-    // Set expiration for 24 hours from now
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 24);
-
-    // 4. Insert the new user into PostgreSQL
+    // 3. Insert the new user into PostgreSQL
+    // We include mobile_number and force is_verified to TRUE right away
     const insertQuery = `
-      INSERT INTO users (email, name, password_hash, verification_token, token_expires_at, is_verified)
-      VALUES ($1, $2, $3, $4, $5, FALSE)
-      RETURNING id, email, name;
+      INSERT INTO users (email, name, mobile_number, password_hash, is_verified)
+      VALUES ($1, $2, $3, $4, TRUE)
+      RETURNING id, email, name, mobile_number;
     `;
-    const values = [email, name, passwordHash, verificationToken, expiresAt];
+    const values = [email, name, mobileNumber, passwordHash];
     const result = await db.query(insertQuery, values);
     const newUser = result.rows[0];
 
-    // 5. Fire off the email in the background
-    // We don't use 'await' here because we don't want the user waiting on the HTTP response 
-    // while the SMTP server processes the email dispatch.
-    sendVerificationEmail(email, verificationToken).catch(console.error);
+    // NOTE: Verification token generation and background email dispatch (sendVerificationEmail) 
+    // have been removed to facilitate instant login access.
 
     return newUser;
   }
@@ -151,9 +147,9 @@ class AuthService {
     }
 
     // 4. Check if they have verified their email
-    if (!user.is_verified) {
-      throw new Error('Please verify your email address before logging in.');
-    }
+    // if (!user.is_verified) {
+    //   throw new Error('Please verify your email address before logging in.');
+    // }
 
     // 5. Update their last_login timestamp
     await db.query('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
