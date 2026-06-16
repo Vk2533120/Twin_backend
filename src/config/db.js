@@ -1,32 +1,45 @@
-
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const pool = new Pool({
- user: process.env.DB_USER,
- host: process.env.DB_HOST,
- database: process.env.DB_DATABASE,
- password: process.env.DB_PASSWORD,
- port: process.env.DB_PORT,
- // Max number of clients in the pool
- max: 20,
- // How long a client is allowed to remain idle before being closed
- idleTimeoutMillis: 30000,
- // How long to wait for a connection before timing out
- connectionTimeoutMillis: 2000,
-});
+console.log("=== CONNECTION TRACKER ===");
+console.log("Is DATABASE_URL found?", !!process.env.DATABASE_URL);
+console.log("Is local DB_HOST found?", !!process.env.DB_HOST);
+console.log("==========================");
 
-// Test connection on initialization
+let poolConfig;
+
+// If we have a Railway URL, ONLY use that string
+if (process.env.DATABASE_URL) {
+  poolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } // Required for secure cloud connections
+  };
+} 
+// Otherwise, use the local variables
+else {
+  poolConfig = {
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    // Safely parse the password to a string to prevent the SASL crash
+    password: process.env.DB_PASSWORD ? String(process.env.DB_PASSWORD) : undefined,
+    port: process.env.DB_PORT,
+  };
+}
+
+const pool = new Pool(poolConfig);
+
 pool.on('connect', () => {
- console.log('PostgreSQL connection pool established successfully.');
+  // Silent success
 });
 
 pool.on('error', (err) => {
- console.error('Unexpected error on idle PostgreSQL client:', err);
- process.exit(-1);
+  console.error('Unexpected error on idle PostgreSQL client:', err);
+  process.exit(-1);
 });
 
+// BULLETPROOF EXPORT: Covers every possible way your app might import it
 module.exports = {
- query: (text, params) => pool.query(text, params),
- pool // Exporting the pool itself for transactions later if needed
+  query: (text, params) => pool.query(text, params),
+  pool: pool
 };
