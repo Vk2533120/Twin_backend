@@ -162,7 +162,7 @@ class AuthService {
 
     // 6. Generate the login session JWT
     const systemToken = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email , role: user.role, plan: user.plan},
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
