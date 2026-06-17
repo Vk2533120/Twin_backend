@@ -16,11 +16,12 @@ class AuthController {
       const { user, systemToken } = await authService.verifyAndAuthenticateGoogleUser(token);
 
       // Bake the token into a highly secure HttpOnly Cookie
-      res.cookie('token', systemToken, {
-        httpOnly: true, // Prevents JavaScript extraction (XSS protection)
-        secure: process.env.NODE_ENV === 'production', // true in prod (requires HTTPS)
-        sameSite: 'strict', // CSRF mitigation layer
-        maxAge: 24 * 60 * 60 * 1000, // 1 day lifetime matching the JWT
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,       // REQUIRED: Tells the browser it's safe to send over HTTPS (Railway)
+        sameSite: 'none',   // REQUIRED: Allows your local HTML file to send cookies to the live server
+        path: '/',          // CRITICAL: Tells the cookie it is allowed to go to /api/admin, not just /api/auth
+        maxAge: 24 * 60 * 60 * 1000 // 1 day (or whatever you currently have)
       });
 
       // Respond with the basic user payload (do NOT send the JWT in the body)
@@ -118,11 +119,12 @@ class AuthController {
       const { user, systemToken } = await authService.loginWithEmail(email, password);
 
       // Issue the secure cookie
-      res.cookie('token', systemToken, {
+      res.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        secure: true,       // REQUIRED: Tells the browser it's safe to send over HTTPS (Railway)
+        sameSite: 'none',   // REQUIRED: Allows your local HTML file to send cookies to the live server
+        path: '/',          // CRITICAL: Tells the cookie it is allowed to go to /api/admin, not just /api/auth
+        maxAge: 24 * 60 * 60 * 1000 // 1 day (or whatever you currently have)
       });
 
       return res.status(200).json({
