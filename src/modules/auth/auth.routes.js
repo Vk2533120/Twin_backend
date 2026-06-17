@@ -4,7 +4,6 @@ const { protect } = require('../../middleware/authMiddleware');
 const { authLimiter } = require('../../middleware/rateLimiter');
 const { validate } = require('../../middleware/validate'); // Import the validation engine
 const schemas = require('./auth.validation'); // Import your specific rules
-const { protect } = require('../../middleware/authMiddleware');
 const { requireAdmin, requirePlan } = require('../../middleware/roleMiddleware');
 
 const router = express.Router();
