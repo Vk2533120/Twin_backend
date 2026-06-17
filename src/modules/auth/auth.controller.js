@@ -16,7 +16,7 @@ class AuthController {
       const { user, systemToken } = await authService.verifyAndAuthenticateGoogleUser(token);
 
       // Bake the token into a highly secure HttpOnly Cookie
-      res.cookie('token', token, {
+      res.cookie('token', systemToken, {
         httpOnly: true,
         secure: true,       // REQUIRED: Tells the browser it's safe to send over HTTPS (Railway)
         sameSite: 'none',   // REQUIRED: Allows your local HTML file to send cookies to the live server
@@ -119,7 +119,7 @@ class AuthController {
       const { user, systemToken } = await authService.loginWithEmail(email, password);
 
       // Issue the secure cookie
-      res.cookie('token', token, {
+      res.cookie('token', systemToken, {
         httpOnly: true,
         secure: true,       // REQUIRED: Tells the browser it's safe to send over HTTPS (Railway)
         sameSite: 'none',   // REQUIRED: Allows your local HTML file to send cookies to the live server
