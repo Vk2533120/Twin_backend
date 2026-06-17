@@ -15,8 +15,6 @@ router.post('/forgot-password', authLimiter, validate(schemas.forgotPasswordSche
 router.post('/reset-password', authLimiter, validate(schemas.resetPasswordSchema), authController.handleResetPassword);
 
 
-// Only Pro users can generate high-res images
-router.post('/generate-8k', protect, requirePlan('pro'), imageController.generate);
 
 // Standard routes
 router.post('/google', authController.handleGoogleLogin);
