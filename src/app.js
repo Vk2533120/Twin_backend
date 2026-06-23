@@ -12,29 +12,32 @@ app.set('trust proxy', 1);
 // This allows your React frontend (running on a different port) to talk to your API
 // Look at your browser's address bar when you open test_login.html.
 // Replace the 5500 URL below with whatever URL your browser is currently showing.
-const allowedOrigins = [
-  'http://localhost:5173', 
-  'http://127.0.0.1:5500', 
-  'http://localhost:5500',
-  'https://ai-twin-git-1064507568780.asia-south1.run.app', // <-- Removed trailing slash & fixed spacing
-  'https://www.twinn.live/',
-  'https://twinn.live'                                // <-- Removed trailing slash
-];
-app.use(cors({
-  origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+// const allowedOrigins = [
+//   'http://localhost:5173', 
+//   'http://127.0.0.1:5500', 
+//   'http://localhost:5500',
+//   'https://ai-twin-git-1064507568780.asia-south1.run.app', // <-- Removed trailing slash & fixed spacing
+//   'https://www.twinn.live/',
+//   'https://twinn.live'                                // <-- Removed trailing slash
+// ];
+// app.use(cors({
+//   origin: function (origin, callback) {
+//       if (!origin) return callback(null, true);
       
-      // This checks your hardcoded list OR your environment variables dynamically
-      if (allowedOrigins.indexOf(origin) !== -1 || origin === process.env.APP_URL) {
-          return callback(null, true);
-      } else {
-          return callback(new Error('CORS Policy Blocked'), false);
-      }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+//       // This checks your hardcoded list OR your environment variables dynamically
+//       if (allowedOrigins.indexOf(origin) !== -1 || origin === process.env.APP_URL) {
+//           return callback(null, true);
+//       } else {
+//           return callback(new Error('CORS Policy Blocked'), false);
+//       }
+//   },
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization']
+// }));
+
+const cors = require('cors');
+app.use(cors());
 
 // 2. Global Parsers
 app.use(express.json());             // Parses incoming JSON body requests (req.body)
