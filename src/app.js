@@ -17,20 +17,21 @@ const allowedOrigins = [
   'http://127.0.0.1:5500', 
   'http://localhost:5500',
   'https://ai-twin-git-1064507568780.asia-south1.run.app', // <-- Removed trailing slash & fixed spacing
-  'https://www.twinn.live'                                 // <-- Removed trailing slash
+  'https://www.twinn.live' ,
+  'https://twinn.live'                                // <-- Removed trailing slash
 ];
 app.use(cors({
   origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       
-      if (allowedOrigins.indexOf(origin) === -1) {
-          var msg = 'The CORS policy for this site does not allow access from the specified Origin: ' + origin;
-          return callback(new Error(msg), false);
+      // This checks your hardcoded list OR your environment variables dynamically
+      if (allowedOrigins.indexOf(origin) !== -1 || origin === process.env.APP_URL) {
+          return callback(null, true);
+      } else {
+          return callback(new Error('CORS Policy Blocked'), false);
       }
-      return callback(null, true);
   },
-  credentials: true, // <-- CRITICAL: Allows cookies to be sent cross-origin
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
