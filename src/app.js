@@ -36,7 +36,7 @@ app.set('trust proxy', 1);
 //   allowedHeaders: ['Content-Type', 'Authorization']
 // }));
 
-const cors = require('cors');
+// const cors = require('cors');
 app.use(cors());
 
 // 2. Global Parsers
