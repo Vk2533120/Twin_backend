@@ -13,12 +13,12 @@ app.set('trust proxy', 1);
 // Look at your browser's address bar when you open test_login.html.
 // Replace the 5500 URL below with whatever URL your browser is currently showing.
 const allowedOrigins = [
-    'http://localhost:5173', 
-    'http://127.0.0.1:5500', 
-    'http://localhost:5500',
-    'https://ai-twin-git-1064507568780.asia-sout  h1.run.app/',
-    'https://www.twinn.live/' // <-- Your new live frontend domain!
-  ];
+  'http://localhost:5173', 
+  'http://127.0.0.1:5500', 
+  'http://localhost:5500',
+  'https://ai-twin-git-1064507568780.asia-south1.run.app', // <-- Removed trailing slash & fixed spacing
+  'https://www.twinn.live'                                 // <-- Removed trailing slash
+];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
