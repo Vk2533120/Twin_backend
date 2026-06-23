@@ -22,12 +22,11 @@ app.set('trust proxy', 1);
     'https://twinn.live'
   ];
   
-  app.use(cors({
-    origin: allowedOrigins, // Pass the array directly; the library handles it perfectly under the hood
-    credentials: true,      // Crucial: Tells the browser it's safe to process the incoming cookies
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+  // The Ultimate Testing CORS Setup
+app.use(cors({
+  origin: true,       // This tells CORS to dynamically echo back whatever origin requested it
+  credentials: true,  // This allows your cookies to pass through
+}));
 
 // app.use(cors());
 
